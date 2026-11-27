@@ -1,9 +1,10 @@
-# ChatDeux
+<h1><img src="assets/chatdeux-logo.png" alt="ChatDeux" height="44"></h1>
 
 ChatDeux is an embeddable, real-time cross-site chat widget backed by an Express + WebSocket server. Websites embed the ChatDeux iframe and share a rolling 50-message chat stream where each message links back to the page it was sent from.
 
 ## Repository layout
 
+- [`assets/`](assets) — Project logo image
 - [`frontend/`](frontend) — Static embeddable chat widget (`index.html`, `style.css`) and info page (`about/`)
 - [`backend/`](backend) — Node.js Express + `ws` server (`server.js`), tests (`server.test.js`), and dependencies (`package.json`)
 
