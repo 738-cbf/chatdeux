@@ -45,7 +45,7 @@ npm start
 
 ### Frontend
 
-Serve `frontend/` behind the same origin as the backend reverse-proxied at `/chatdeux-api` (HTTP) and `/chatdeux-ws` (WebSocket).
+Serve `frontend/` behind the same origin (e.g. `https://chatdeux.calico.here/`) with the backend reverse-proxied at `/api` (HTTP) and `/ws` (WebSocket).
 
 ## API endpoints
 

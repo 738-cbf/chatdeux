@@ -10,10 +10,10 @@
 
 <body>
     <div class="maincontainer">
-        <span class="titlesmall" onclick="window.open('https://agentworkpad.com/chatdeux/embed/about', '_blank')">
+        <span class="titlesmall" onclick="window.open('/about/', '_blank')">
             <span id="chat">Chat</span><span id="deux">Deux</span>
         </span>
-        <span class="clickme" onclick="window.open('https://agentworkpad.com/chatdeux/embed/about', '_blank')">Click to add to your site!</span>
+        <span class="clickme" onclick="window.open('/about/', '_blank')">Click to add to your site!</span>
         <div class="chatbox">
             <span id="loadingMessages" role="status">Loading...</span>
             <div class="messages" id="messages">
@@ -27,8 +27,8 @@
     </div>
 
     <script>
-        const API_BASE_URL = `${window.location.origin}/chatdeux-api`;
-        const WS_URL = `${window.location.origin.replace(/^http/, 'ws')}/chatdeux-ws`;
+        const API_BASE_URL = `${window.location.origin}/api`;
+        const WS_URL = `${window.location.origin.replace(/^http/, 'ws')}/ws`;
         const MAX_MESSAGES = 50;
         const CLIENT_ID_STORAGE_KEY = 'chatdeuxClientId';
 
