@@ -1,10 +1,22 @@
 <h1><img src="assets/chatdeux-logo.png" alt="ChatDeux" height="44"></h1>
 
-ChatDeux is an embeddable, real-time cross-site chat widget backed by an Express + WebSocket server. Websites embed the ChatDeux iframe and share a rolling 50-message chat stream where each message links back to the page it was sent from.
+**ChatDeux** is an embeddable, real-time cross-site chat widget designed for quick, informal chats between websites — no rounded blurry slop, just a crisp retro iframe backed by WebSockets. Up to 50 messages are kept in rolling history (anything past 50 is permanently pruned), every message links back to the site it was sent from, and each sender gets a consistent pseudonymous color without exposing raw IPs.
+
+<p>
+  <img src="assets/chatdeux-preview.png" alt="ChatDeux chat window preview" width="280">
+</p>
+
+Drop it onto your own site with an iframe (minimum recommended size `250px×250px`):
+
+```html
+<iframe src="https://chatdeux.calico.here/" id="deuxchatframe" width="250px" height="250px" frameborder="0">ChatDeux Frame</iframe>
+```
+
+Read more about the story and how it works here: **[chatdeux.calico.here/about](https://chatdeux.calico.here/about/)**
 
 ## Repository layout
 
-- [`assets/`](assets) — Project logo image
+- [`assets/`](assets) — Project logo and README preview image
 - [`frontend/`](frontend) — Static embeddable chat widget (`index.html`, `style.css`) and info page (`about/`)
 - [`backend/`](backend) — Node.js Express + `ws` server (`server.js`), tests (`server.test.js`), and dependencies (`package.json`)
 
