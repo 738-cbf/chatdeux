@@ -1,0 +1,61 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: ghostwhite;
+    max-width: 600px;
+}
+
+.titlesmall {
+    text-shadow: 1px 1px #000;
+    font-size: 2em;
+    width: fit-content;
+}
+
+#chat {
+    color: coral;
+    font-weight: bold;
+}
+
+#deux {
+    color: lightskyblue;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.homelink {
+    text-decoration: none;
+    color: blue;
+    font-style: italic;
+}
+
+small {
+    padding: 0;
+}
+
+code {
+    padding: 0;
+    margin: 0;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+pre {
+    padding: 0;
+    margin: 0;
+}
+
+.codecontainer {
+    float: left;
+    background-color: lightgray;
+    padding: 5px;
+    border: 2px outset gray;
+    margin-bottom: 10px;
+}
+
+p {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+h2 {
+    margin-bottom: 5px;
+}

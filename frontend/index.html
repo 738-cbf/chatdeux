@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatDeux</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="maincontainer">
+        <span class="titlesmall" onclick="window.open('https://agentworkpad.com/chatdeux/embed/about', '_blank')">
+            <span id="chat">Chat</span><span id="deux">Deux</span>
+        </span>
+        <span class="clickme" onclick="window.open('https://agentworkpad.com/chatdeux/embed/about', '_blank')">Click to add to your site!</span>
+        <div class="chatbox">
+            <span id="loadingMessages" role="status">Loading...</span>
+            <div class="messages" id="messages">
+                <!-- Messages will be populated here :3 -->
+            </div>
+            <div class="inputarea">
+                <input type="text" placeholder="Message" id="messageInput">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = `${window.location.origin}/chatdeux-api`;
+        const WS_URL = `${window.location.origin.replace(/^http/, 'ws')}/chatdeux-ws`;
+        const MAX_MESSAGES = 50;
+        const CLIENT_ID_STORAGE_KEY = 'chatdeuxClientId';
+
+        let ws;
+        let currentSite = window.location.hostname || 'localhost';
+
+        function getOrCreateClientId() {
+            const existing = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+            if (existing) {
+                return existing;
+            }
+
+            let created;
+            if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                created = window.crypto.randomUUID();
+            } else {
+                created = `legacy-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+            }
+
+            localStorage.setItem(CLIENT_ID_STORAGE_KEY, created);
+            return created;
+        }
+
+        const clientId = getOrCreateClientId();
+
+        function initWebSocket() {
+            ws = new WebSocket(WS_URL);
+
+            ws.onopen = function () {
+                console.log('Connected to chat server');
+                loadMessages();
+            };
+
+            ws.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+
+                if (data.type === 'new_message' && data.message) {
+                    addMessageToDOM(data.message);
+                    scrollToBottom();
+                    return;
+                }
+
+                if (data.type === 'clear_messages') {
+                    clearMessages();
+                    return;
+                }
+
+                if (data.type === 'messages_pruned') {
+                    loadMessages();
+                }
+            };
+
+            ws.onclose = function () {
+                console.log('Disconnected from chat server');
+                setTimeout(initWebSocket, 3000);
+            };
+
+            ws.onerror = function (error) {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        async function loadMessages() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/messages`);
+                const messages = await response.json();
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = '';
+                messages.forEach(message => addMessageToDOM(message));
+                document.getElementById('loadingMessages').hidden = true;
+                scrollToBottom();
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            }
+        }
+
+        function generateSenderColor(senderTag) {
+            const seed = senderTag || 'unknown';
+            let hash = 0;
+
+            for (let i = 0; i < seed.length; i++) {
+                const char = seed.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+
+            hash = Math.abs(hash);
+            const hue = hash % 360;
+            const saturation = 35 + (Math.floor(hash / 360) % 30);
+            const lightness = 85;
+
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        function addMessageToDOM(message) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.title = new Date(message.timestamp).toLocaleString();
+            const senderSeed = message.senderTag || `${message.sourceUrl || ''}:${message.id || ''}`;
+            messageDiv.style.backgroundColor = generateSenderColor(senderSeed);
+
+            const link = document.createElement('a');
+            try {
+                const parsedUrl = new URL(message.sourceUrl);
+                if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+                    link.href = parsedUrl.toString();
+                }
+            } catch {
+                // Ignore malformed sourceUrl values.
+            }
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.className = 'sourcesite';
+
+            const contentSpan = document.createElement('span');
+            contentSpan.className = 'messagecontent';
+            contentSpan.textContent = message.content;
+
+            link.appendChild(contentSpan);
+            messageDiv.appendChild(link);
+
+            messagesContainer.appendChild(messageDiv);
+
+            while (messagesContainer.children.length > MAX_MESSAGES) {
+                messagesContainer.removeChild(messagesContainer.firstChild);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+
+            function getParentUrl() {
+                let parentUrl = window.location.href;
+                if (parent !== window && document.referrer) {
+                    parentUrl = document.referrer;
+                }
+                return parentUrl;
+            }
+
+            const parentUrl = getParentUrl();
+
+            if (!content) return;
+
+            const message = {
+                content: content,
+                sourceUrl: parentUrl,
+                sourceSite: currentSite,
+                clientId: clientId,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message)
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                } else {
+                    const errorBody = await response.json().catch(() => ({}));
+                    console.error('Failed to send message:', errorBody.error || response.statusText);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function scrollToBottom() {
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function clearMessages() {
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+        }
+
+        document.getElementById('messageInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        window.addEventListener('load', initWebSocket);
+    </script>
+</body>
+
+</html>

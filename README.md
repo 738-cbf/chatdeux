@@ -1,0 +1,60 @@
+# ChatDeux
+
+ChatDeux is an embeddable, real-time cross-site chat widget backed by an Express + WebSocket server. Websites embed the ChatDeux iframe and share a rolling 50-message chat stream where each message links back to the page it was sent from.
+
+## Repository layout
+
+- [`frontend/`](frontend) — Static embeddable chat widget (`index.html`, `style.css`) and info page (`about/`)
+- [`backend/`](backend) — Node.js Express + `ws` server (`server.js`), tests (`server.test.js`), and dependencies (`package.json`)
+
+## Features
+
+- Real-time message broadcast over WebSockets with automatic reconnect and heartbeat cleanup.
+- Rolling history capped at 50 messages (older messages are pruned and broadcast via `messages_pruned`).
+- Pseudonymous per-sender colors derived from a salted SHA-256 `senderTag` (no raw IPs exposed).
+- Per-IP sliding-window rate limiting for messages and webhooks.
+- Optional JSON disk persistence (`messages.json`), admin clear endpoint, and authenticated inbound webhook endpoint.
+
+## Running locally
+
+### Backend
+
+```sh
+cd backend
+npm install
+npm test
+npm start
+```
+
+### Configuration (environment variables)
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `HOST` | `127.0.0.1` | Bind address |
+| `PORT` | `3000` | Listening port |
+| `TRUST_PROXY` | `loopback` | Express `trust proxy` setting (`true`, `false`, hop count, or `loopback`/`linklocal`/`uniquelocal`) |
+| `MESSAGE_STORE_PATH` | `./messages.json` | Path for persisted message history |
+| `DISABLE_MESSAGE_PERSISTENCE` | *(unset)* | Set to `1` to keep messages in memory only |
+| `SENDER_HASH_SALT` | *(dev fallback)* | Salt used to derive pseudonymous `senderTag` values (set in production) |
+| `ADMIN_TOKEN` | *(disabled)* | Bearer / `x-admin-token` secret enabling `DELETE /messages` |
+| `WEBHOOK_SECRET` | *(disabled)* | Bearer / `x-webhook-secret` secret enabling `POST /webhook/message` |
+| `MESSAGE_RATE_LIMIT_WINDOW_MS` | `60000` | Rate limit window for `POST /messages` (ms) |
+| `MESSAGE_RATE_LIMIT_MAX` | `20` | Max messages per IP per window |
+| `WEBHOOK_RATE_LIMIT_WINDOW_MS` | `60000` | Rate limit window for `POST /webhook/message` (ms) |
+| `WEBHOOK_RATE_LIMIT_MAX` | `60` | Max webhook calls per IP per window |
+
+### Frontend
+
+Serve `frontend/` behind the same origin as the backend reverse-proxied at `/chatdeux-api` (HTTP) and `/chatdeux-ws` (WebSocket).
+
+## API endpoints
+
+- `GET /messages` — Fetch up to the latest 50 messages
+- `POST /messages` — Post a new message (`{ content, sourceUrl, sourceSite?, clientId? }`)
+- `DELETE /messages` — Clear all messages (requires `ADMIN_TOKEN`)
+- `POST /webhook/message` — Ingest an external message (requires `WEBHOOK_SECRET`)
+- `GET /health` — Service health and active client/message counts
+
+## License
+
+MIT

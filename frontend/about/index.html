@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About ChatDeux</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="maincontainer">
+        <div class="titlesmall">
+            <span id="chat">Chat</span><span id="deux">Deux</span>
+        </div>
+        <h2 style="margin-top: 5px;">Features</h2>
+        <ul>
+            <li>Real time chatting between websites with ChatDeux implemented.</li>
+            <li>Up to 50 message history, designed for quick, informal chats.</li>
+            <li>All history past 50 messages is permanently pruned.</li>
+            <li>Pseudonymous sender colors are consistent without exposing raw IPs.</li>
+            <li>Messages are linked to the website they were sent from.</li>
+            <li>Date and time of each message visible on hover.</li>
+        </ul>
+        <h2>How to implement</h2>
+        <p>Being a cross site chat, you can add a ChatDeux window to your very own website. Copy the iframe code below
+            to implement.
+            You can then position and size the frame by manipulating the "deuxchatframe" id.<br>
+            <b>Note: minimum recommended height and width of iframe is 250px&#10005;250px. Below this, display issues
+                may occur.</b>
+        </p>
+
+        <div class="codecontainer">
+            <code>
+<pre>&lt;iframe src="https://agentworkpad.com/chatdeux/embed/" id="deuxchatframe" width="250px" height="250px" frameborder="0"&gt;ChatDeux Frame&lt;/iframe&gt;</pre>
+        </code>
+        </div><br>
+        <h2>Story</h2>
+        <p><a href="https://agentworkpad.com/chatdeux" target="_blank">ChatDeux</a> was inspired by K-Chat, a
+            php
+            cross-site chat program I made when I was learning php that worked by embedding the site in an iframe across
+            sites, just like ChatDeux.
+            However, with K-Chat, the user had to manually refresh to get the latest messages, all messages were stored
+            in an html flatfile, and it was extremely bulky and annoying to use. It also wasn't very safe!
+            Once I learned about Websockets from their use on <a href="https://libpol.org/"
+                target="_blank">libpol.org</a>, I
+            decided to recreate K-Chat with brand new styling and formatting, using Websockets to enable its real-time
+            functionality.</p>
+        <p>Claude helped a lot with the Websocket integration, since I really didn't know much about them, but I covered
+            the design and styling since I didn't want it to be rounded blurry slop and had a specific look in mind. The
+            old K-Chat used a purple and yellow color scheme, with serif fonts. Unique! ...but garrish.</p>
+        <p>The name "ChatDeux" was chosen by one of my mutuals on twitter and is an evolution of "K-Chat 2". The
+            branding was originally going to include a cat (as "Chat" is French for "cat", and "Deux" is French for "two")
+            walking on telephone wires between servers, per my mutual, however, I
+            cannot draw, so this idea has been tabled for now.</p>
+
+        <iframe src="https://agentworkpad.com/chatdeux/embed/" id="deuxchatframe" width="250px" height="250px" frameborder="0">ChatDeux Frame</iframe>
+    </div>
+    <hr>
+    <a class="homelink" href="https://agentworkpad.com/">Home</a>
+</body>
+
+</html>
