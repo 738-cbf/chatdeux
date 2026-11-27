@@ -12,7 +12,7 @@ Drop it onto your own site with an iframe (minimum recommended size `250px×250p
 <iframe src="https://chatdeux.calico.here/" id="deuxchatframe" width="250px" height="250px" frameborder="0">ChatDeux Frame</iframe>
 ```
 
-Read more about the story and how it works here: **[chatdeux.calico.here/about](https://chatdeux.calico.here/about/)**
+Read more here: **[chatdeux.calico.here/about](https://chatdeux.calico.here/about/)**
 
 ## Repository layout
 
