@@ -1,6 +1,6 @@
 <h1><img src="assets/chatdeux-logo.png" alt="ChatDeux" height="44"></h1>
 
-**ChatDeux** is an embeddable, real-time cross-site chat widget designed for quick, informal chats between websites — no rounded blurry slop, just a crisp retro iframe backed by WebSockets. Up to 50 messages are kept in rolling history (anything past 50 is permanently pruned), every message links back to the site it was sent from, and each sender gets a consistent pseudonymous color without exposing raw IPs.
+**ChatDeux** is an embeddable, real-time cross-site chat widget designed for quick, informal chats between websites, using an iframe backed by WebSockets. Up to 50 messages are kept in rolling history (anything past 50 is permanently pruned), every message links back to the site it was sent from, and each sender gets a consistent pseudonymous color.
 
 <p>
   <img src="assets/chatdeux-preview.png" alt="ChatDeux chat window preview" width="280">
@@ -24,7 +24,7 @@ Read more about the story and how it works here: **[chatdeux.calico.here/about](
 
 - Real-time message broadcast over WebSockets with automatic reconnect and heartbeat cleanup.
 - Rolling history capped at 50 messages (older messages are pruned and broadcast via `messages_pruned`).
-- Pseudonymous per-sender colors derived from a salted SHA-256 `senderTag` (no raw IPs exposed).
+- Pseudonymous per-sender colors derived from a salted SHA-256 `senderTag`.
 - Per-IP sliding-window rate limiting for messages and webhooks.
 - Optional JSON disk persistence (`messages.json`), admin clear endpoint, and authenticated inbound webhook endpoint.
 
